@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<creatures>
+  
+  <creature id="1">
+    <!-- Unique ID for creature. Do not change -->
+    <name>Pyrastar</name>
+    <!-- Creature name -->
+    <health>50</health>
+    <!-- Starting Max health -->
+    <physicalattack>3</physicalattack>
+    <!-- Starting Physical Attack -->
+    <magicalattack>6</magicalattack>
+    <!-- Starting Magical Attack -->
+    <speed>5</speed>
+    <!-- Starting Speed -->
+    <physicaldefense>3</physicaldefense>
+    <!-- Starting Physical Defense -->
+    <magicaldefense>3</magicaldefense>
+    <!-- Starting Magical Defense -->
+    <movelist></movelist>
+    <!-- Move List -->
+    <attributetype>0</attributetype>
+    <!-- Attribute Type ... 0=Pyre, 1=Aqua, 2=Shock-->
+    <healthgrowth>1</healthgrowth>
+    <!-- Health Growth Rate -->
+    <physicalattackgrowth>1</physicalattackgrowth>
+    <!-- Physical Attack Growth Rate -->
+    <magicalattackgrowth>3</magicalattackgrowth>
+    <!-- Magical Attack Growth Rate -->
+    <speedgrowth>0</speedgrowth>
+    <!-- Speed Growth Rate -->
+    <physicaldefensegrowth>1</physicaldefensegrowth>
+    <!-- Physical Defense Growth Rate -->
+    <magicaldefensegrowth>3</magicaldefensegrowth>
+    <!-- Magical Defense Growth Rate -->
+  </creature>
+  
+  <creature id="2">
+    <!-- Unique ID for creature. Do not change -->
+    <name>Electrostar</name>
+    <!-- Creature name -->
+    <health>50</health>
+    <!-- Starting Max health -->
+    <physicalattack>6</physicalattack>
+    <!-- Starting Physical Attack -->
+    <magicalattack>3</magicalattack>
+    <!-- Starting Magical Attack -->
+    <speed>5</speed>
+    <!-- Starting Speed -->
+    <physicaldefense>3</physicaldefense>
+    <!-- Starting Physical Defense -->
+    <magicaldefense>3</magicaldefense>
+    <!-- Starting Magical Defense -->
+    <movelist></movelist>
+    <!-- Move List -->
+    <attributetype>2</attributetype>
+    <!-- Attribute Type ... 0=Pyre, 1=Aqua, 2=Shock-->
+    <healthgrowth>2</healthgrowth>
+    <!-- Health Growth Rate -->
+    <physicalattackgrowth>3</physicalattackgrowth>
+    <!-- Physical Attack Growth Rate -->
+    <magicalattackgrowth>1</magicalattackgrowth>
+    <!-- Magical Attack Growth Rate -->
+    <speedgrowth>0</speedgrowth>
+    <!-- Speed Growth Rate -->
+    <physicaldefensegrowth>2</physicaldefensegrowth>
+    <!-- Physical Defense Growth Rate -->
+    <magicaldefensegrowth>2</magicaldefensegrowth>
+    <!-- Magical Defense Growth Rate -->
+  </creature>
+  
+</creatures>
