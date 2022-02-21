@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -36,8 +37,9 @@ namespace BattleSystemPrototyping
 
                     try
                     {
-                         temp = new MatureLifeForm("creatures.xml", Int32.Parse(input_id));
-                    } catch (Exception ex)
+                        temp = new MatureLifeForm("creatures.xml", Int32.Parse(input_id));
+                    }
+                    catch (Exception ex)
                     {
                         Console.WriteLine("An error occured while trying to load creature ID: {0}. Defaulting to Pyrastar", input_id);
                         temp = new MatureLifeForm(
@@ -56,7 +58,15 @@ namespace BattleSystemPrototyping
                             magicalAttackGrowth: 3,
                             speedGrowth: 0,
                             physicalDefenseGrowth: 1,
-                            magicalDefenseGrowth: 3);
+                            magicalDefenseGrowth: 3,
+                            new List<Limb>() {
+                                new Limb("Left Leg", 10, LimbType.Mobility),
+                                new Limb("Right Leg", 10, LimbType.Mobility),
+                                new Limb("Torso", 50, LimbType.Health),
+                                new Limb("Left Arm", 10, LimbType.Damage),
+                                new Limb("Right Arm", 10, LimbType.Damage),
+                                new Limb("Head", 20, LimbType.Accuracy)
+                            });
                     }
 
                     player.OwnedLifeForms.Add(temp);
@@ -84,12 +94,20 @@ namespace BattleSystemPrototyping
                 magicalAttackGrowth: 1,
                 speedGrowth: 0,
                 physicalDefenseGrowth: 2,
-                magicalDefenseGrowth: 2);
+                magicalDefenseGrowth: 2,
+                new List<Limb>() {
+                    new Limb("Left Leg", 10, LimbType.Mobility),
+                    new Limb("Right Leg", 10, LimbType.Mobility),
+                    new Limb("Torso", 50, LimbType.Health),
+                    new Limb("Left Arm", 10, LimbType.Damage),
+                    new Limb("Right Arm", 10, LimbType.Damage),
+                    new Limb("Head", 20, LimbType.Accuracy)
+                    });
 
             enemy.MoveList.Add(new Move("Electro Pummel", Move.MoveTypes.Physical, Attributes.AttributeTypes.Shock, 5));
             PrintBattleDetails();
             PrintAvailableCommands();
-                
+
             while (FightOngoing())
             {
                 PlayerAction();
@@ -137,6 +155,39 @@ namespace BattleSystemPrototyping
                 return false;
             }
         }
+
+        private Limb ChooseLimb(MatureLifeForm target)
+        {
+            Console.WriteLine($"Which of {target.Name}'s limbs should be targeted?");
+
+
+            for (int i = 0; i < target.Limbs.Count; i++)
+            {
+                Console.WriteLine($"{i}: {target.Limbs[i].Name} (HP: {target.Limbs[i].CurrentHealth} / {target.Limbs[i].MaxHealth})");
+            }
+            string answer = Console.ReadLine();
+            try
+            {
+                Limb limb = target.Limbs[Int32.Parse(answer)];
+                if (limb.CurrentHealth <= 0)
+                {
+                    Console.WriteLine("That limb is broken! Pick another!");
+                    ChooseLimb(target);
+                }
+
+                return limb;
+            }
+            catch (Exception ex)
+            {
+                if (ex is IndexOutOfRangeException)
+                    Debug.WriteLine("Invalid index selected for limb. Returning first non broken limb.", ex);
+                if (ex is FormatException)
+                    Debug.WriteLine("Invalid input for limb entry. Returning first non broken limb.", ex);
+
+                return ChooseNonBrokenLimb(target);
+            }
+        }
+
         private void PlayerAction()
         {
             bool answered = false;
@@ -148,11 +199,13 @@ namespace BattleSystemPrototyping
                 switch (answer)
                 {
                     case "1":
-                        playerCreature.Attack(enemy);
+
+                        playerCreature.Attack(enemy, ChooseLimb(enemy));
+                        // Instead of just attacking the enemy, this is where we should ask the player which limb we want them to select for damage.
                         answered = true;
                         break;
                     case "2":
-                        playerCreature.UseMove(enemy, playerCreature.MoveList[0]);
+                        playerCreature.UseMove(enemy, ChooseLimb(enemy), playerCreature.MoveList[0]);
                         answered = true;
                         break;
                     case "save":
@@ -165,6 +218,7 @@ namespace BattleSystemPrototyping
                         break;
                     case "stats":
                         playerCreature.PrintDetails();
+                        enemy.PrintDetails();
                         break;
                     case "help":
                         PrintAvailableCommands();
@@ -172,20 +226,44 @@ namespace BattleSystemPrototyping
                 }
             }
         }
+
+        private Limb ChooseNonBrokenLimb(MatureLifeForm target)
+        {
+            foreach (Limb limb in target.Limbs)
+            {
+                if (limb.CurrentHealth > 0)
+                {
+                    return limb;
+                }
+            }
+            return null;
+        }
+
         private void EnemyAction()
         {
             if (rand.Next(0, 2) == 0)
             {
-                enemy.Attack(playerCreature);
+                enemy.Attack(playerCreature, ChooseNonBrokenLimb(playerCreature));
             }
             else
             {
-                enemy.UseMove(playerCreature, enemy.MoveList[0]);
+                enemy.UseMove(playerCreature, ChooseNonBrokenLimb(playerCreature), enemy.MoveList[0]);
             }
         }
         private void PrintBattleDetails()
         {
             Console.WriteLine($"\n\n{playerCreature.Name}\t\t{enemy.Name}\nHealth: {playerCreature.CurrentHealth}\t\tHealth: {enemy.CurrentHealth}\nLevel: {playerCreature.Level}\t\tLevel: {enemy.Level}\n\n");
+            Console.WriteLine($"{playerCreature.Name}'s Limb Details");
+            foreach (Limb limb in playerCreature.Limbs)
+            {
+                Console.WriteLine($"{limb.Name} (HP: {limb.CurrentHealth} / {limb.MaxHealth})");
+            }
+            Console.WriteLine();
+            Console.WriteLine($"{enemy.Name}'s Limb Details");
+            foreach (Limb limb in enemy.Limbs)
+            {
+                Console.WriteLine($"{limb.Name} (HP: {limb.CurrentHealth} / {limb.MaxHealth})");
+            }
         }
         private void PrintAvailableCommands()
         {
